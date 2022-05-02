@@ -11,11 +11,11 @@ var roleUpgrader = {
 			if ( creep.upgradeController(creep.room.controller ) == ERR_NOT_IN_RANGE ) {
 				creep.moveTo(creep.room.controller);
 			} else {
-				const droppedEnergy = creep.room.find(FIND_DROPPED_RESOURCES, {
+				var droppedEnergy = creep.room.find(FIND_DROPPED_RESOURCES, {
 					filter: resource => resource.resourceType == RESOURCE_ENERGY
 				})
 
-				const closest DroppedEnergy = creep.pos.findClosestByPath(droppedEnergy)
+				var closestDroppedEnergy = creep.pos.findClosestByPath(droppedEnergy)
 
 				if ( creep.pickup(closestDroppedEnergy) == ERR_NOT_IN_RANGE ) {
 					creep.moveTo(closestDroppedEnergy);
