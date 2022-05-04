@@ -6,6 +6,12 @@ var rolehauler = require('role.hauler');
 
 var quotahandler = require('handler.quotas');
 
+var home = Game.spawns['Spawn1'];
+var harvesterSpec = [WORK, MOVE];
+var haulerSpec = [CARRY, MOVE];
+var workerSpec = [WORK, CARRY, MOVE]; // for Builders and Upgraders
+var defenderSpec = [TOUGH, TOUGH, TOUGH, TOUGH, ATTACK, MOVE, ATTACK, MOVE];
+
 function filterfunc(role) = {_.filter(Game.creeps, (creep) => creep.memory.role == role)};
 function makecreep(which_spawn, which_spec, which_role) = {
     var newName = which_role + ' ' + Game.time;
@@ -18,12 +24,6 @@ module.exports.loop = function () {
         var runfunc = str.concat('role', role);
         runfunc.run(creep);
     }
-    
-    var home = Game.spawns['Spawn1'];
-    var harvesterSpec = [WORK, MOVE];
-    var haulerSpec = [CARRY, MOVE];
-    var workerSpec = [WORK, CARRY, MOVE]; // for Builders and Upgraders
-    var defenderSpec = [TOUGH, TOUGH, TOUGH, TOUGH, ATTACK, MOVE, ATTACK, MOVE];
     
     if ( Object.keys(filterfunc('harvesters')).length < quotahandler.setCreepQuotas('harvesters') ) {
         makecreep(home, harvesterSpec, 'harvester');
