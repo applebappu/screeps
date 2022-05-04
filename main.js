@@ -4,6 +4,8 @@ var rolebuilder = require('role.builder');
 var roledefender = require('role.defender');
 var rolehauler = require('role.hauler');
 
+function filterfunc(role) = _.filter(Game.creeps, (creep) => creep.memory.role == role);
+
 module.exports.loop = function () {
     for( var name in Game.creeps ) {
         var role = creep.memory.role;
@@ -12,13 +14,10 @@ module.exports.loop = function () {
     }
     
     var home = Game.spawns['Spawn1'];
-    var workerSpec = [WORK, CARRY, MOVE, MOVE];
-    var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
-    var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-    var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-    
+    var harvesterSpec = [WORK, MOVE];
+    var haulerSpec = [CARRY, MOVE];
+    var workerSpec = [WORK, CARRY, MOVE]; // for Builders and Upgraders
     var defenderSpec = [TOUGH, TOUGH, TOUGH, TOUGH, ATTACK, MOVE, ATTACK, MOVE];
-    var defenders = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender');
     
     if ( Object.keys(harvesters).length < 4 ) {
         var newName = 'Harvester ' + Game.time
