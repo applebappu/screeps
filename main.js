@@ -4,7 +4,13 @@ var rolebuilder = require('role.builder');
 var roledefender = require('role.defender');
 var rolehauler = require('role.hauler');
 
-function filterfunc(role) = _.filter(Game.creeps, (creep) => creep.memory.role == role);
+var quotahandler = require('handler.quotas');
+
+function filterfunc(role) = {_.filter(Game.creeps, (creep) => creep.memory.role == role)};
+function makecreep(which_spawn, which_spec, which_role) = {
+    var newName = which_role + ' ' + Game.time;
+    which_spawn.spawnCreep(which_spec, newName, { memory: { role: which_role } } );
+};
 
 module.exports.loop = function () {
     for( var name in Game.creeps ) {
@@ -19,17 +25,13 @@ module.exports.loop = function () {
     var workerSpec = [WORK, CARRY, MOVE]; // for Builders and Upgraders
     var defenderSpec = [TOUGH, TOUGH, TOUGH, TOUGH, ATTACK, MOVE, ATTACK, MOVE];
     
-    if ( Object.keys(harvesters).length < 4 ) {
-        var newName = 'Harvester ' + Game.time
-        home.spawnCreep(workerSpec, newName, { memory: { role: 'harvester' } } );
-    } else if ( Object.keys(upgraders).length < 2 ) {
-        var newName = 'Upgrader ' + Game.time
-        home.spawnCreep(workerSpec, newName, { memory: { role: 'upgrader' } } );
-    } else if ( Object.keys(builders).length < 2 ) {
-        var newName = 'Builder ' + Game.time
-        home.spawnCreep(workerSpec, newName, { memory: { role: 'builder' } } );
-    } else if ( Object.keys(defenders).length < 2 ) {
-        var newName = 'Defender ' + Game.time
-        home.spawnCreep(defenderSpec, newName, { memory: { role: 'defender' } } );
+    if ( Object.keys(filterfunc('harvesters')).length < quotahandler.setCreepQuotas('harvesters') ) {
+        makecreep(home, harvesterSpec, 'harvester');
+    } else if ( Object.keys(filterfunc('upgraders')).length < quotahandler.setCreepQuotas('upgraders') ) {
+        makecreep(home, workerSpec, 'upgrader');
+    } else if ( Object.keys(filterfunc('builders')).length < quotahandler.setCreepQuotas('builders') ) {
+        makecreep(home, workerSpec, 'builder');
+    } else if ( Object.keys(filterfunc('defenders')).length < quotahandler.setCreepQuotas('defenders') ) {
+       makecreep(home, defenderSpec, 'defender');
     }
 };
